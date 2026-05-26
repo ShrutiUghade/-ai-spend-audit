@@ -13,27 +13,71 @@ export interface AuditResult {
   monthlySavings: number;
   annualSavings: number;
   recommendation: string;
+  reason: string;
 }
 
-export function generateAudit(input: AuditInput): AuditResult {
-  const toolPricing =
-    pricingData[input.tool as keyof typeof pricingData];
+export function generateAudit(
+  input: AuditInput
+): AuditResult {
+  let recommendedSpend = input.monthlySpend;
+  let recommendation = "Current setup looks optimized";
+  let reason =
+    "Your current tooling appears reasonably aligned with your spend.";
 
-  if (!toolPricing) {
-    return {
-      currentSpend: input.monthlySpend,
-      recommendedSpend: input.monthlySpend,
-      monthlySavings: 0,
-      annualSavings: 0,
-      recommendation: "No optimization found",
-    };
+  // ChatGPT Team Overspend
+  if (
+    input.tool.toLowerCase() === "chatgpt" &&
+    input.plan.toLowerCase() === "team" &&
+    input.seats <= 2
+  ) {
+    recommendedSpend = 20 * input.seats;
+
+    recommendation = "Switch to ChatGPT Plus";
+
+    reason =
+      "ChatGPT Team pricing becomes inefficient for very small teams.";
   }
 
-  const cheapestPlan = Math.min(
-    ...Object.values(toolPricing)
-  );
+  // Claude Max Overspend
+  if (
+    input.tool.toLowerCase() === "claude" &&
+    input.plan.toLowerCase() === "max"
+  ) {
+    recommendedSpend = 20 * input.seats;
 
-  const recommendedSpend = cheapestPlan * input.seats;
+    recommendation = "Downgrade to Claude Pro";
+
+    reason =
+      "Most users do not fully utilize Claude Max rate limits.";
+  }
+
+  // Cursor Business Overspend
+  if (
+    input.tool.toLowerCase() === "cursor" &&
+    input.plan.toLowerCase() === "business" &&
+    input.seats <= 3
+  ) {
+    recommendedSpend = 20 * input.seats;
+
+    recommendation = "Switch to Cursor Pro";
+
+    reason =
+      "Cursor Business is generally optimized for larger engineering teams.";
+  }
+
+  // Copilot Enterprise Overspend
+  if (
+    input.tool.toLowerCase() === "copilot" &&
+    input.plan.toLowerCase() === "enterprise" &&
+    input.seats < 10
+  ) {
+    recommendedSpend = 19 * input.seats;
+
+    recommendation = "Switch to Copilot Business";
+
+    reason =
+      "Enterprise governance features may not justify pricing at smaller scale.";
+  }
 
   const monthlySavings =
     input.monthlySpend - recommendedSpend;
@@ -43,9 +87,7 @@ export function generateAudit(input: AuditInput): AuditResult {
     recommendedSpend,
     monthlySavings,
     annualSavings: monthlySavings * 12,
-    recommendation:
-      monthlySavings > 0
-        ? "Switch to a lower-cost plan"
-        : "Current setup looks optimized",
+    recommendation,
+    reason,
   };
 }

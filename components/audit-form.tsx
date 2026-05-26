@@ -117,6 +117,9 @@ export default function AuditForm() {
             <p className="pt-4 font-medium text-white">
               {result.recommendation}
             </p>
+            <p className="mt-2 text-sm text-zinc-400">
+  {result.reason}
+</p>
           </div>
         </div>
       )}
