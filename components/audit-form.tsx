@@ -54,18 +54,30 @@ export default function AuditForm() {
         onSubmit={handleSubmit(onSubmit)}
         className="grid gap-4"
       >
-        <input
-          {...register("tool")}
-          placeholder="Tool (chatgpt, claude, cursor)"
-          className="rounded-xl border border-zinc-700 bg-black px-4 py-3"
-        />
+       <select
+  {...register("tool")}
+  className="rounded-xl border border-zinc-700 bg-black px-4 py-3"
+>
+  <option value="">Select Tool</option>
+  <option value="chatgpt">ChatGPT</option>
+  <option value="claude">Claude</option>
+  <option value="cursor">Cursor</option>
+  <option value="copilot">GitHub Copilot</option>
+  <option value="gemini">Gemini</option>
+</select>
 
-        <input
-          {...register("plan")}
-          placeholder="Current Plan"
-          className="rounded-xl border border-zinc-700 bg-black px-4 py-3"
-        />
-
+        <select
+  {...register("plan")}
+  className="rounded-xl border border-zinc-700 bg-black px-4 py-3"
+>
+  <option value="">Select Plan</option>
+  <option value="plus">Plus</option>
+  <option value="team">Team</option>
+  <option value="enterprise">Enterprise</option>
+  <option value="pro">Pro</option>
+  <option value="business">Business</option>
+  <option value="max">Max</option>
+</select>
         <input
           type="number"
           {...register("seats")}
