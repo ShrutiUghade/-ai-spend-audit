@@ -1,5 +1,6 @@
-"use client";
 
+"use client";
+import { supabase } from "@/lib/supabase";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { generateAudit } from "@/lib/audit-engine";
@@ -100,41 +101,59 @@ export default function AuditForm() {
         </button>
       </form>
 
-      {result && (
-        <div className="mt-8 rounded-2xl border border-zinc-700 bg-black p-6">
-          <h3 className="text-2xl font-bold">
-            Audit Results
-          </h3>
+     {result && (
+  <div className="mt-8 space-y-6">
+    <div className="rounded-3xl border border-green-800 bg-green-950 p-8 text-center">
+      <p className="text-sm uppercase tracking-wide text-green-400">
+        Estimated Monthly Savings
+      </p>
 
-          <div className="mt-4 space-y-2 text-zinc-300">
-            <p>
-              Current Spend: ${result.currentSpend}
-            </p>
+      <h3 className="mt-2 text-5xl font-bold text-green-300">
+        ${result.monthlySavings}
+      </h3>
 
-            <p>
-              Recommended Spend: $
-              {result.recommendedSpend}
-            </p>
-
-            <p>
-              Monthly Savings: $
-              {result.monthlySavings}
-            </p>
-
-            <p>
-              Annual Savings: $
-              {result.annualSavings}
-            </p>
-
-            <p className="pt-4 font-medium text-white">
-              {result.recommendation}
-            </p>
-            <p className="mt-2 text-sm text-zinc-400">
-  {result.reason}
-</p>
-          </div>
-        </div>
-      )}
+      <p className="mt-4 text-zinc-300">
+        Potential annual savings of $
+        {result.annualSavings}
+      </p>
     </div>
-  );
-}
+
+    <div className="rounded-3xl border border-zinc-800 bg-black p-6">
+      <h3 className="text-2xl font-bold text-white">
+        Recommendation
+      </h3>
+
+      <p className="mt-4 text-lg font-medium text-white">
+        {result.recommendation}
+      </p>
+
+      <p className="mt-3 text-zinc-400">
+        {result.reason}
+      </p>
+    </div>
+
+    <div className="grid gap-4 md:grid-cols-2">
+      <div className="rounded-2xl border border-zinc-800 bg-zinc-900 p-6">
+        <p className="text-sm text-zinc-400">
+          Current Spend
+        </p>
+
+        <h4 className="mt-2 text-3xl font-bold">
+          ${result.currentSpend}
+        </h4>
+      </div>
+
+      <div className="rounded-2xl border border-zinc-800 bg-zinc-900 p-6">
+        <p className="text-sm text-zinc-400">
+          Recommended Spend
+        </p>
+
+        <h4 className="mt-2 text-3xl font-bold">
+          ${result.recommendedSpend}
+        </h4>
+      </div>
+    </div>
+  </div>
+     )}
+     </div>
+  )};
