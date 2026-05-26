@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { generateAudit } from "@/lib/audit-engine";
 
@@ -20,7 +20,20 @@ export default function AuditForm() {
     reset,
   } = useForm<FormData>();
 
+  useEffect(() => {
+    const saved = localStorage.getItem("audit-form");
+
+    if (saved) {
+      reset(JSON.parse(saved));
+    }
+  }, [reset]);
+
   const onSubmit = (data: FormData) => {
+    localStorage.setItem(
+      "audit-form",
+      JSON.stringify(data)
+    );
+
     const audit = generateAudit({
       tool: data.tool,
       plan: data.plan,
